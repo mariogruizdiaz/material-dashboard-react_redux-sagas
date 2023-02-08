@@ -26,6 +26,7 @@ function* genericQuery(action) {
 function* genericMutation(action) {
   const command = yield generic(action);
   try {
+    console.log(action, command);
     const result = yield command.resolver(action);
     if (result && result[command.endpointName]?.success) {
       yield put(command.onSuccess({ data: result[command.endpointName].data }));
