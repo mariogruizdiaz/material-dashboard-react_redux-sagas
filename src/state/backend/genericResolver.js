@@ -15,7 +15,7 @@ export const genericResolver = function* genericResolver(action) {
     return yield executeCommand("https://localhost:5555", statement, action.payload);
   } catch (e) {
     // eslint-disable-next-line no-console
-    console.log(`Error excuting the command: ${action}`);
+    console.log(`Error excuting the command: ${JSON.stringify(action)}`);
     throw e;
   }
 };
