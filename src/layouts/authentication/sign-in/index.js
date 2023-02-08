@@ -41,10 +41,27 @@ import BasicLayout from "layouts/authentication/components/BasicLayout";
 // Images
 import bgImage from "assets/images/bg-sign-in-basic.jpeg";
 
-function Basic() {
+import { genericAction } from "state/actions";
+import { bindActionCreators } from "redux";
+import { connect } from "react-redux";
+import { actionTypes } from "../../../state/actions";
+
+function Basic(props) {
   const [rememberMe, setRememberMe] = useState(false);
+  const [email, setEmail] = useState();
+  const [password, setPassword] = useState();
 
   const handleSetRememberMe = () => setRememberMe(!rememberMe);
+
+  const onSignIn = () => {
+    // eslint-disable-next-line react/prop-types
+    const { dispatchGenericAction } = props;
+    dispatchGenericAction(actionTypes.SIGN_IN, { email, password });
+  };
+
+  const handleEmailChange = (e) => setEmail(e.target.value);
+
+  const handlePasswordChange = (e) => setPassword(e.target.value);
 
   return (
     <BasicLayout image={bgImage}>
@@ -84,10 +101,10 @@ function Basic() {
         <MDBox pt={4} pb={3} px={3}>
           <MDBox component="form" role="form">
             <MDBox mb={2}>
-              <MDInput type="email" label="Email" fullWidth />
+              <MDInput type="email" label="Email" fullWidth onChange={handleEmailChange} />
             </MDBox>
             <MDBox mb={2}>
-              <MDInput type="password" label="Password" fullWidth />
+              <MDInput type="password" label="Password" fullWidth onChange={handlePasswordChange} />
             </MDBox>
             <MDBox display="flex" alignItems="center" ml={-1}>
               <Switch checked={rememberMe} onChange={handleSetRememberMe} />
@@ -102,7 +119,7 @@ function Basic() {
               </MDTypography>
             </MDBox>
             <MDBox mt={4} mb={1}>
-              <MDButton variant="gradient" color="info" fullWidth>
+              <MDButton variant="gradient" color="info" fullWidth onClick={onSignIn}>
                 sign in
               </MDButton>
             </MDBox>
@@ -128,4 +145,12 @@ function Basic() {
   );
 }
 
-export default Basic;
+const mapDispatchToProps = (dispatch) => ({
+  dispatchGenericAction: bindActionCreators(genericAction, dispatch),
+});
+
+const mapStateToProps = (state) => ({
+  security: state.security,
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(Basic);
